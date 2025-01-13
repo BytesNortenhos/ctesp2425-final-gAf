@@ -1,0 +1,6 @@
+@ctesp2425_final_gAf_HostAddress = http://localhost:5055
+
+GET {{ctesp2425_final_gAf_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

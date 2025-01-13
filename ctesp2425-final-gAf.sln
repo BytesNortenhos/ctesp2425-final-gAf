@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35327.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ctesp2425-final-gAf", "ctesp2425-final-gAf\ctesp2425-final-gAf.csproj", "{3BD1B9D6-B604-4AF1-8C2F-726C3D041FB9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3BD1B9D6-B604-4AF1-8C2F-726C3D041FB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BD1B9D6-B604-4AF1-8C2F-726C3D041FB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BD1B9D6-B604-4AF1-8C2F-726C3D041FB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BD1B9D6-B604-4AF1-8C2F-726C3D041FB9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7475A64A-8230-4F71-8E60-0137141AB11F}
+	EndGlobalSection
+EndGlobal
