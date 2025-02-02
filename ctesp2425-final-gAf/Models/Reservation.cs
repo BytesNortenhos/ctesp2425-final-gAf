@@ -1,4 +1,4 @@
-namespace ctesp2425_final_gAf
+namespace ctesp2425_final_gAf.Models
 {
     public class Reservation
     {
