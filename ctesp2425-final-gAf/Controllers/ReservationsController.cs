@@ -23,15 +23,15 @@ public class ReservationsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetReservations(DateOnly? date)
     {
-        if(date != null) return Ok(await _context.Reservations.Where(r => r.ReservationDate == date).ToListAsync());
+        if(date != null) return Ok(await _context.Reservations.Where(r => r.ReservationDate == date && r.StatusReservation == 0).ToListAsync());
 
-        return Ok(await _context.Reservations.ToListAsync());
+        return Ok(await _context.Reservations.Where(r => r.StatusReservation == 0).ToListAsync());
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetReservation(int id)
     {
-        var reservation = _context.Reservations.FirstOrDefault(r => r.Id == id);
+        var reservation = _context.Reservations.FirstOrDefault(r => r.Id == id && r.StatusReservation == 0);
         return (reservation == null) ? NotFound() : Ok(reservation);
     }
 
@@ -65,7 +65,7 @@ public class ReservationsController : ControllerBase
     {
         if(customerName == null && resDate == null && resTime == null && tableNumber == null && numOfPeople == null) return BadRequest("Pelo menos 1 campo deve ser atualizado!");
 
-        var reservation = _context.Reservations.FirstOrDefault(r => r.Id == id);
+        var reservation = _context.Reservations.FirstOrDefault(r => r.Id == id && r.StatusReservation == 0);
         if (reservation == null) return NotFound();
 
         reservation.CustomerName = (customerName != null) ? customerName : reservation.CustomerName;
@@ -116,7 +116,7 @@ public class ReservationsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteReservation(int id)
     {
-        var reservation = _context.Reservations.FirstOrDefault(r => r.Id == id);
+        var reservation = _context.Reservations.FirstOrDefault(r => r.Id == id && r.StatusReservation == 0);
         if (reservation == null) return NotFound();
 
         reservation.StatusReservation = 1;
