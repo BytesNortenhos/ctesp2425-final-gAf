@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage ( 'Checkout') {
             steps {
-                git 'https://github.com/BytesNortenhos/ctesp2425-final-gAf.git'
+                git credentialsId: 'github-token', url: 'https://github.com/BytesNortenhos/ctesp2425-final-gAf.git'
             }
         }
                 stage('Build') {
