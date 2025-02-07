@@ -1,8 +1,6 @@
 pipeline {
     agent any
     stages {
-        stage ( 'Checkout') {
-            steps {
                 stage('Build') {
             steps {
                 sh 'dotnet build --configuration Release'
@@ -20,9 +18,6 @@ pipeline {
                 sh 'dotnet tool install --global trx2junit'  
                 sh 'trx2junit TestResults/*.trx'  
             }
-            }
-        }
-            
         }
 
         stage('Publish Test Results') {
