@@ -1,11 +1,6 @@
 pipeline {
     agent any
     stages {
-        stage ( 'Checkout') {
-            steps {
-                git 'https://github.com/BytesNortenhos/ctesp2425-final-gAf.git'
-            }
-        }
                 stage('Build') {
             steps {
                 sh 'dotnet build --configuration Release'
