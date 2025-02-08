@@ -4,6 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'ctesp2425-final-gaf'
         SONAR_PROJECT_KEY = 'ctesp2425-final-gaf'
+        DOTNET_SYSTEM_GLOBALIZATION_INVARIANT = 'true'
     }
 
     tools {
