@@ -3,15 +3,8 @@ pipeline {
     stages {
         stage('Test Docker') {
             steps {
-                script {
-                    try {
-                        sh 'docker ps'
-                        echo "Docker is working!"
-                    } catch (Exception e) {
-                        echo "Docker is not working: ${e}"
-                    }
-                }
-            }
+                sh 'sudo docker ps'
+            }y
         }
     }
 }
