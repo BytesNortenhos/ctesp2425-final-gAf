@@ -47,7 +47,19 @@ pipeline {
                 withSonarQubeEnv('SonarQube') {
                     bat """
                         dotnet tool install --global dotnet-sonarscanner || true
-                        dotnet sonarscanner begin /k:"${SONAR_PROJECT_KEY}" /d:sonar.host.url="http://sonarqube:9000"
+                        stage('SonarQube Analysis') {
+    steps {
+        withSonarQubeEnv('SonarQube') {
+            bat """
+                dotnet tool install --global dotnet-sonarscanner || true
+                dotnet sonarscanner begin /k:"${SONAR_PROJECT_KEY}" /d:sonar.host.url="http://sonarqube:9000" /d:sonar.login="sqp_8b3fe0b6a7aa8760fe8f98ea7191f30e96c2638a"
+                dotnet build ctesp2425-final-gAf/ctesp2425-final-gAf.csproj --no-restore
+                dotnet sonarscanner end
+            """
+        }
+    }
+}
+
                         dotnet build ctesp2425-final-gAf/ctesp2425-final-gAf.csproj --no-restore
                         dotnet sonarscanner end
                     """
