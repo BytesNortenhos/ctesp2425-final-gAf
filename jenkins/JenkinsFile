@@ -17,14 +17,14 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo 'A fazer checkout do repositório...'
-                git branch: 'main', url: 'https://bitbucket.org/ctespisep/ctesp_24_25_initial.git'
+                git branch: 'develop', url: 'https://github.com/BytesNortenhos/ctesp2425-final-gAf.git'
             }
         }
 
         stage('Restaurar Dependências') {
             steps {
                 echo 'A restaurar as dependências...'
-                dir('Task_Management_System/TMS') {  // Substitui com o caminho correto do teu projeto ou ficheiro de solução
+                dir('ctesp2425-final-gAf') {  // Substitui com o caminho correto do teu projeto ou ficheiro de solução
                     bat 'dotnet restore'  // Restaura as dependências
                 }
             }
@@ -33,7 +33,7 @@ pipeline {
         stage('Compilar') {
             steps {
                 echo 'A compilar o projeto...'
-                dir('Task_Management_System/TMS') {  // Garante que estás no diretório correto
+                dir('ctesp2425-final-gAf') {  // Garante que estás no diretório correto
                     bat 'dotnet build --configuration Release'  // Compila o projeto
                 }
             }
@@ -42,7 +42,7 @@ pipeline {
         stage('Testar') {
             steps {
                 echo 'A executar os testes...'
-                dir('Task_Management_System/TMS') {  // Garante que estás no diretório correto
+                dir('ctesp2425-final-gAf') {  // Garante que estás no diretório correto
                     bat 'dotnet test --configuration Release'  // Executa os testes
                 }
             }
@@ -51,7 +51,7 @@ pipeline {
         stage('Publicar') {
             steps {
                 echo 'A publicar o projeto...'
-                dir('Task_Management_System/TMS') {  // Garante que estás no diretório correto
+                dir('ctesp2425-final-gAf') {  // Garante que estás no diretório correto
                     bat 'dotnet publish --configuration Release --output ./publish'  // Publica o projeto
                 }
             }
