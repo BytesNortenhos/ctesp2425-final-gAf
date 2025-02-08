@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'ctesp2425-final-gAf'
+        DOCKER_IMAGE = 'ctesp2425-final-gaf'
         SONAR_PROJECT_KEY = 'ctesp2425-final-gaf'
     }
 
@@ -57,7 +57,8 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                bat "docker build -t ${DOCKER_IMAGE} ."
+                // Corrigido para especificar o caminho correto para o Dockerfile e contexto
+                bat "docker build -t ${DOCKER_IMAGE} -f ctesp2425-final-gAf/Dockerfile ctesp2425-final-gAf"
             }
         }
 
