@@ -103,14 +103,14 @@ pipeline {
                                 export PATH="$PATH:/var/jenkins_home/.dotnet/tools"
 
                                 # Run SonarQube analysis
-                                dotnet sonarscanner begin /k:"reservation-api" /d:sonar.host.url="http://sonarqube:9000/" /d:sonar.login="sqp_55efbeed057d640bc44e67cec936fbb9532cd530"
+                                dotnet sonarscanner begin /k:"reservation-api" /d:sonar.host.url="http://sonarqube:9000/" /d:sonar.login="squ_9253af3f485aaf992621d6e89b1f2e50c8e73cdc"
                                 dotnet build ctesp2425-final-gAf/ctesp2425-final-gAf.csproj --no-restore
                                 dotnet sonarscanner end /d:sonar.login="sqp_8b3fe0b6a7aa8760fe8f98ea7191f30e96c2638a"
                             '''
                         } else {
                             bat '''
                                 dotnet tool install --global dotnet-sonarscanner || true
-                                dotnet sonarscanner begin /k:"reservation-api" /d:sonar.host.url="http://sonarqube:9000/" /d:sonar.login="sqp_55efbeed057d640bc44e67cec936fbb9532cd530"
+                                dotnet sonarscanner begin /k:"reservation-api" /d:sonar.host.url="http://sonarqube:9000/" /d:sonar.login="squ_9253af3f485aaf992621d6e89b1f2e50c8e73cdc"
                                 dotnet build ctesp2425-final-gAf/ctesp2425-final-gAf.csproj --no-restore
                                 dotnet sonarscanner end /d:sonar.login="sqp_8b3fe0b6a7aa8760fe8f98ea7191f30e96c2638a"
                             '''
