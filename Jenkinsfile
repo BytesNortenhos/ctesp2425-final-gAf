@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'ctesp2425-final-gaf/ctesp2425-final-gaf'
+        DOCKER_IMAGE = 'ctesp2425-final-gAf'
         SONAR_PROJECT_KEY = 'ctesp2425-final-gaf'
     }
 
