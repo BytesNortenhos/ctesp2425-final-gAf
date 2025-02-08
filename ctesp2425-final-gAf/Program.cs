@@ -20,13 +20,22 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(
 
 var app = builder.Build();
 
+
+// Criar ou aplicar as migra��es automaticamente ao rodar a aplica��o
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.Migrate();
+    dbContext.Database.EnsureCreated(); // Cria o banco de dados, se n�o existir
+}
+
+
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-//app.UseAuthorization();
 app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();

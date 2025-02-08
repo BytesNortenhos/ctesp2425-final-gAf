@@ -2,15 +2,10 @@ Vagrant.configure("2") do |config|
   config.vm.box = "gusztavvargadr/sql-server"
   config.vm.box_version = "2019.2102.2409"
 
-  # Configuração de rede para acesso ao SQL Server
-  config.vm.network "private_network", type: "dhcp"
-
-  # Mapeamento de portas para permitir conexão externa ao SQL Server
   config.vm.network "forwarded_port", guest: 1433, host: 1433
 
-  # Configuração de hardware
   config.vm.provider "virtualbox" do |vb|
     vb.memory = "2048"
     vb.cpus = 2
   end
-end 
+end

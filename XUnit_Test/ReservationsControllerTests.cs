@@ -52,6 +52,16 @@ namespace XUnit_Test
                     TableNumber = 3,
                     NumberOfPeople = 2,
                     StatusReservation = 0
+                },
+                new Reservation
+                {
+                    Id = 4,
+                    CustomerName = "Pedro Barbosa",
+                    ReservationDate = new DateOnly(2024, 3, 30),
+                    ReservationTime = new TimeOnly(19, 0),
+                    TableNumber = 4,
+                    NumberOfPeople = 5,
+                    StatusReservation = 0
                 }
             );
             _mockContext.SaveChanges();
@@ -212,7 +222,7 @@ namespace XUnit_Test
         public async Task DeleteReservation_ActiveReservation_SetsStatusToCancelled()
         {
             //Eliminamos a reserva 1
-            var result = await _controller.DeleteReservation(1);
+            var result = await _controller.DeleteReservation(4);
             var okResult = Assert.IsType<OkObjectResult>(result);
             var reservation = Assert.IsAssignableFrom<Reservation>(okResult.Value);
 
