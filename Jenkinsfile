@@ -3,8 +3,9 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'ctesp2425-final-gaf'
-        SONAR_PROJECT_KEY = 'ctesp2425-final-gaf'
+        SONAR_PROJECT_KEY = 'reservation-api'
         DOTNET_SYSTEM_GLOBALIZATION_INVARIANT = 'true'
+        SONAR_TOKEN = 'squ_9253af3f485aaf992621d6e89b1f2e50c8e73cdc' // Hardcoded SonarQube token
     }
 
     tools {
@@ -103,16 +104,16 @@ pipeline {
                                 export PATH="$PATH:/var/jenkins_home/.dotnet/tools"
 
                                 # Run SonarQube analysis
-                                dotnet sonarscanner begin /k:"reservation-api" /d:sonar.host.url="http://sonarqube:9000/" /d:sonar.login="squ_9253af3f485aaf992621d6e89b1f2e50c8e73cdc"
+                                dotnet sonarscanner begin /k:"${SONAR_PROJECT_KEY}" /d:sonar.host.url="http://sonarqube:9000/" /d:sonar.login="${SONAR_TOKEN}"
                                 dotnet build ctesp2425-final-gAf/ctesp2425-final-gAf.csproj --no-restore
-                                dotnet sonarscanner end /d:sonar.login="sqp_8b3fe0b6a7aa8760fe8f98ea7191f30e96c2638a"
+                                dotnet sonarscanner end /d:sonar.login="${SONAR_TOKEN}"
                             '''
                         } else {
                             bat '''
                                 dotnet tool install --global dotnet-sonarscanner || true
-                                dotnet sonarscanner begin /k:"reservation-api" /d:sonar.host.url="http://sonarqube:9000/" /d:sonar.login="squ_9253af3f485aaf992621d6e89b1f2e50c8e73cdc"
+                                dotnet sonarscanner begin /k:"${SONAR_PROJECT_KEY}" /d:sonar.host.url="http://sonarqube:9000/" /d:sonar.login="${SONAR_TOKEN}"
                                 dotnet build ctesp2425-final-gAf/ctesp2425-final-gAf.csproj --no-restore
-                                dotnet sonarscanner end /d:sonar.login="sqp_8b3fe0b6a7aa8760fe8f98ea7191f30e96c2638a"
+                                dotnet sonarscanner end /d:sonar.login="${SONAR_TOKEN}"
                             '''
                         }
                     }
