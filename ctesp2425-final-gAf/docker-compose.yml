@@ -34,6 +34,8 @@ services:
       - "8080:8080"
     volumes:
       - jenkins_data:/var/jenkins_home
+    networks:
+      - jenkins-sonarqube-network
 
   sonarqube:
     image: sonarqube:latest
@@ -45,6 +47,8 @@ services:
       - sonarqube_logs:/opt/sonarqube/logs
     environment:
       - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+    networks:
+      - jenkins-sonarqube-network
 
 volumes:
   db_data:
@@ -53,3 +57,7 @@ volumes:
   sonarqube_data:
   sonarqube_extensions:
   sonarqube_logs:
+
+networks:
+  jenkins-sonarqube-network:
+    driver: bridge
