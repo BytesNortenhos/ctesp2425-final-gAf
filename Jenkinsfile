@@ -11,6 +11,30 @@ pipeline {
     }
 
     stages {
+        stage('Install libicu (Unix Only)') {
+            when {
+                expression { isUnix() } // Only run this stage on Unix-like systems
+            }
+            steps {
+                sh '''
+                    # Install libicu based on the Linux distribution
+                    if command -v apt-get &> /dev/null; then
+                        sudo apt-get update
+                        sudo apt-get install -y libicu-dev
+                    elif command -v yum &> /dev/null; then
+                        sudo yum install -y libicu
+                    elif command -v apk &> /dev/null; then
+                        apk add icu-libs
+                    elif command -v dnf &> /dev/null; then
+                        sudo dnf install -y libicu
+                    else
+                        echo "Unsupported package manager. Please install libicu manually."
+                        exit 1
+                    fi
+                '''
+            }
+        }
+
         stage('Checkout') {
             steps {
                 checkout scm
