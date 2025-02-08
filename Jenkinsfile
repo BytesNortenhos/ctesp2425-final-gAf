@@ -17,16 +17,23 @@ pipeline {
             }
             steps {
                 sh '''
+                    # Check if sudo is available
+                    if command -v sudo &> /dev/null; then
+                        SUDO="sudo"
+                    else
+                        SUDO=""
+                    fi
+
                     # Install libicu based on the Linux distribution
                     if command -v apt-get &> /dev/null; then
-                        sudo apt-get update
-                        sudo apt-get install -y libicu-dev
+                        $SUDO apt-get update
+                        $SUDO apt-get install -y libicu-dev
                     elif command -v yum &> /dev/null; then
-                        sudo yum install -y libicu
+                        $SUDO yum install -y libicu
                     elif command -v apk &> /dev/null; then
-                        apk add icu-libs
+                        $SUDO apk add icu-libs
                     elif command -v dnf &> /dev/null; then
-                        sudo dnf install -y libicu
+                        $SUDO dnf install -y libicu
                     else
                         echo "Unsupported package manager. Please install libicu manually."
                         exit 1
