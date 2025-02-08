@@ -1,68 +1,39 @@
 pipeline {
     agent any
-
-    environment {
-        SONAR_SCANNER_HOME = tool 'SonarScanner'  // Deve corresponder à configuração global da ferramenta
+        environment {
+        // SONAR_SCANNER_HOME = tool 'SonarScanner'  // Deve corresponder à configuração global da ferramenta
         PATH = "${env.PATH};C:/Program Files/dotnet"  // Atualiza com o caminho correto do .NET SDK
-    }
+         }
 
     stages {
-        stage('Verificar Instalação do .NET') {
-            steps {
-                echo 'Verificando a instalação do .NET SDK...'
-                bat 'dotnet --info'  // Verifica se a CLI do .NET está a funcionar
-            }
-        }
-
         stage('Checkout') {
             steps {
-                echo 'A fazer checkout do repositório...'
-                git branch: 'develop', url: 'https://github.com/BytesNortenhos/ctesp2425-final-gAf.git'
+                checkout scm
             }
         }
 
-        stage('Restaurar Dependências') {
+        stage('Restore') {
             steps {
-                echo 'A restaurar as dependências...'
-                dir('ctesp2425-final-gAf') {  // Substitui com o caminho correto do teu projeto ou ficheiro de solução
-                    bat 'dotnet restore'  // Restaura as dependências
-                }
+                sh 'dotnet restore'
             }
         }
 
-        stage('Compilar') {
+        stage('Build') {
             steps {
-                echo 'A compilar o projeto...'
-                dir('ctesp2425-final-gAf') {  // Garante que estás no diretório correto
-                    bat 'dotnet build --configuration Release'  // Compila o projeto
-                }
+                sh 'dotnet build --no-restore'
             }
         }
 
-        stage('Testar') {
+        stage('Test') {
             steps {
-                echo 'A executar os testes...'
-                dir('ctesp2425-final-gAf') {  // Garante que estás no diretório correto
-                    bat 'dotnet test --configuration Release'  // Executa os testes
-                }
+                sh 'dotnet test --no-build --logger "trx;LogFileName=testresults.trx"'
             }
         }
-        
-        stage('Publicar') {
+
+        stage('Publish Test Results') {
             steps {
-                echo 'A publicar o projeto...'
-                dir('ctesp2425-final-gAf') {  // Garante que estás no diretório correto
-                    bat 'dotnet publish --configuration Release --output ./publish'  // Publica o projeto
-                }
+                xunit(testDataPublishers: [[$class: 'MSTestPublisher']], testTimeMargin: '3000', thresholdMode: 1, thresholds: [[$class: 'FailedThreshold', failureThreshold: '0'], [$class: 'SkippedThreshold', failureThreshold: '0']], tools: [[$class: 'MSTestJunitHudsonTestType', pattern: '**/TestResults/*.trx']])
             }
         }
     }
-
-    post {
-        success {
-            echo 'Pipeline concluído com sucesso!'
-        }
-        failure {
-            echo 'Pipeline falhou!'
-        }
-    }}
+}
