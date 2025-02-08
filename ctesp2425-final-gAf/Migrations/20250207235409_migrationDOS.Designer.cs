@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ctesp2425_final_gAf.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250206011603_MigracaoBD")]
-    partial class MigracaoBD
+    [Migration("20250207235409_migrationDOS")]
+    partial class migrationDOS
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

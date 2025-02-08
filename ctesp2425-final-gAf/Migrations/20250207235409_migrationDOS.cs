@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ctesp2425_final_gAf.Migrations
 {
     /// <inheritdoc />
-    public partial class MigracaoBD : Migration
+    public partial class migrationDOS : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
