@@ -19,15 +19,20 @@ pipeline {
 
         stage('Restore') {
             steps {
-                // Alterado o caminho para o .csproj na subpasta correta
                 bat 'dotnet restore ctesp2425-final-gAf/ctesp2425-final-gAf.csproj'
             }
         }
 
         stage('Build') {
             steps {
-                // Alterado o caminho para o .csproj na subpasta correta
                 bat 'dotnet build ctesp2425-final-gAf/ctesp2425-final-gAf.csproj --configuration Release --no-restore'
+            }
+        }
+
+        stage('Restore XUnit Test') {
+            steps {
+                // Adiciona a restauração dos pacotes NuGet para o projeto de testes
+                bat 'dotnet restore XUnit_Test/XUnit_Test.csproj'
             }
         }
 
@@ -43,7 +48,6 @@ pipeline {
                     bat """
                         dotnet tool install --global dotnet-sonarscanner || true
                         dotnet sonarscanner begin /k:"${SONAR_PROJECT_KEY}" /d:sonar.host.url="http://sonarqube:9000"
-                        // Alterado o caminho para o .csproj na subpasta correta
                         dotnet build ctesp2425-final-gAf/ctesp2425-final-gAf.csproj --no-restore
                         dotnet sonarscanner end
                     """
