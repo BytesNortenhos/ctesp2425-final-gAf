@@ -1,35 +1,68 @@
 pipeline {
     agent any
 
+    environment {
+        SONAR_SCANNER_HOME = tool 'SonarScanner'  // Deve corresponder à configuração global da ferramenta
+        PATH = "${env.PATH};C:/Program Files/dotnet"  // Atualiza com o caminho correto do .NET SDK
+    }
+
     stages {
+        stage('Verificar Instalação do .NET') {
+            steps {
+                echo 'Verificando a instalação do .NET SDK...'
+                bat 'dotnet --info'  // Verifica se a CLI do .NET está a funcionar
+            }
+        }
+
         stage('Checkout') {
             steps {
-                checkout scm
+                echo 'A fazer checkout do repositório...'
+                git branch: 'main', url: 'https://bitbucket.org/ctespisep/ctesp_24_25_initial.git'
             }
         }
 
-        stage('Restore') {
+        stage('Restaurar Dependências') {
             steps {
-                sh 'dotnet --version'
+                echo 'A restaurar as dependências...'
+                dir('Task_Management_System/TMS') {  // Substitui com o caminho correto do teu projeto ou ficheiro de solução
+                    bat 'dotnet restore'  // Restaura as dependências
+                }
             }
         }
 
-        stage('Build') {
+        stage('Compilar') {
             steps {
-                sh 'dotnet build --no-restore'
+                echo 'A compilar o projeto...'
+                dir('Task_Management_System/TMS') {  // Garante que estás no diretório correto
+                    bat 'dotnet build --configuration Release'  // Compila o projeto
+                }
             }
         }
 
-        stage('Test') {
+        stage('Testar') {
             steps {
-                sh 'dotnet test --no-build --logger "trx;LogFileName=testresults.trx"'
+                echo 'A executar os testes...'
+                dir('Task_Management_System/TMS') {  // Garante que estás no diretório correto
+                    bat 'dotnet test --configuration Release'  // Executa os testes
+                }
             }
         }
-
-        stage('Publish Test Results') {
+        
+        stage('Publicar') {
             steps {
-                xunit(testDataPublishers: [[$class: 'MSTestPublisher']], testTimeMargin: '3000', thresholdMode: 1, thresholds: [[$class: 'FailedThreshold', failureThreshold: '0'], [$class: 'SkippedThreshold', failureThreshold: '0']], tools: [[$class: 'MSTestJunitHudsonTestType', pattern: '**/TestResults/*.trx']])
+                echo 'A publicar o projeto...'
+                dir('Task_Management_System/TMS') {  // Garante que estás no diretório correto
+                    bat 'dotnet publish --configuration Release --output ./publish'  // Publica o projeto
+                }
             }
         }
     }
-}
+
+    post {
+        success {
+            echo 'Pipeline concluído com sucesso!'
+        }
+        failure {
+            echo 'Pipeline falhou!'
+        }
+    }}
