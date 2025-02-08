@@ -47,8 +47,7 @@ pipeline {
                 withSonarQubeEnv('SonarQube') {
                     bat '''
                         dotnet tool install --global dotnet-sonarscanner || true
-                        dotnet sonarscanner begin /k:"reservation-api" /d:sonar.host.url="http://localhost:9001/" /d:sonar.login="sqp_8b3fe0b6a7aa8760fe8f98ea7191f30e96c2638a" 
-                        dir .sonarqube
+                        dotnet sonarscanner begin /k:"reservation-api" /d:sonar.host.url="http://192.168.68.106:9001/" /d:sonar.login="sqp_8b3fe0b6a7aa8760fe8f98ea7191f30e96c2638a"  
                         dotnet build ctesp2425-final-gAf/ctesp2425-final-gAf.csproj --no-restore
                         dotnet sonarscanner end /d:sonar.login="sqp_8b3fe0b6a7aa8760fe8f98ea7191f30e96c2638a"
                     '''
