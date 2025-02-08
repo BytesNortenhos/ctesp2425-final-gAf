@@ -1,9 +1,9 @@
 pipeline {
-    agent any
-        environment {
-        // SONAR_SCANNER_HOME = tool 'SonarScanner'  // Deve corresponder à configuração global da ferramenta
-        PATH = "${env.PATH};C:/Program Files/dotnet"  // Atualiza com o caminho correto do .NET SDK
-         }
+    agent {
+        docker {
+            image 'mcr.microsoft.com/dotnet/sdk:7.0' // Use the appropriate .NET SDK image
+        }
+    }
 
     stages {
         stage('Checkout') {
