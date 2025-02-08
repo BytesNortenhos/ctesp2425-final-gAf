@@ -96,7 +96,13 @@ pipeline {
                     script {
                         if (isUnix()) {
                             sh '''
+                                # Install dotnet-sonarscanner
                                 dotnet tool install --global dotnet-sonarscanner || true
+
+                                # Add .NET tools directory to PATH
+                                export PATH="$PATH:/var/jenkins_home/.dotnet/tools"
+
+                                # Run SonarQube analysis
                                 dotnet sonarscanner begin /k:"reservation-api" /d:sonar.host.url="http://localhost:9000/" /d:sonar.login="sqp_55efbeed057d640bc44e67cec936fbb9532cd530"  
                                 dotnet build ctesp2425-final-gAf/ctesp2425-final-gAf.csproj --no-restore
                                 dotnet sonarscanner end /d:sonar.login="sqp_8b3fe0b6a7aa8760fe8f98ea7191f30e96c2638a"
