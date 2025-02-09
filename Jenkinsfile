@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'ctesp2425-final-gaf'
+        DOCKER_HUB_REPO = 'robertovalentee/ctesp2425-final-gaf' // Replace with your Docker Hub repository
         SONAR_PROJECT_KEY = 'reservation-api'
         DOTNET_SYSTEM_GLOBALIZATION_INVARIANT = 'true'
         SONAR_TOKEN = 'squ_7e044418093f94ea6086c683f16b848bb9f48f82' // Hardcoded SonarQube token
@@ -143,21 +144,47 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+        stage('Push Docker Image to Docker Hub') {
+            steps {
+                script {
+                    docker.withServer('unix:///var/run/docker.sock') {
+                        // Use Jenkins Docker settings for registry URL and credentials
+                        docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
+                            if (isUnix()) {
+                                sh "docker tag ${DOCKER_IMAGE} ${DOCKER_HUB_REPO}:latest"
+                                sh "docker push ${DOCKER_HUB_REPO}:latest"
+                            } else {
+                                bat "docker tag ${DOCKER_IMAGE} ${DOCKER_HUB_REPO}:latest"
+                                bat "docker push ${DOCKER_HUB_REPO}:latest"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Deploy from Docker Hub') {
             steps {
                 script {
                     docker.withServer('unix:///var/run/docker.sock') {
                         if (isUnix()) {
                             sh """
+                                # Stop and remove the existing container
                                 docker stop ${DOCKER_IMAGE} || true
                                 docker rm ${DOCKER_IMAGE} || true
-                                docker run -d --name ${DOCKER_IMAGE} -p 8050:8080 ${DOCKER_IMAGE}
+
+                                # Pull the latest image from Docker Hub
+                                docker pull ${DOCKER_HUB_REPO}:latest
+
+                                # Run the new container
+                                docker run -d --name ${DOCKER_IMAGE} -p 8050:8080 ${DOCKER_HUB_REPO}:latest
                             """
                         } else {
                             bat """
                                 docker stop ${DOCKER_IMAGE} || true
                                 docker rm ${DOCKER_IMAGE} || true
-                                docker run -d --name ${DOCKER_IMAGE} -p 8050:8080 ${DOCKER_IMAGE}
+                                docker pull ${DOCKER_HUB_REPO}:latest
+                                docker run -d --name ${DOCKER_IMAGE} -p 8050:8080 ${DOCKER_HUB_REPO}:latest
                             """
                         }
                     }
