@@ -5,7 +5,7 @@ pipeline {
         DOCKER_IMAGE = 'ctesp2425-final-gaf'
         SONAR_PROJECT_KEY = 'reservation-api'
         DOTNET_SYSTEM_GLOBALIZATION_INVARIANT = 'true'
-        SONAR_TOKEN = 'squ_9253af3f485aaf992621d6e89b1f2e50c8e73cdc' // Hardcoded SonarQube token
+        SONAR_TOKEN = 'squ_7e044418093f94ea6086c683f16b848bb9f48f82' // Hardcoded SonarQube token
     }
 
     tools {
@@ -99,23 +99,25 @@ pipeline {
                             sh '''
                                 # Install dotnet-sonarscanner
                                 dotnet tool install --global dotnet-sonarscanner || true
-
-                                # Add .NET tools directory to PATH
-                                export PATH="$PATH:/var/jenkins_home/.dotnet/tools"
-
-                                # Run SonarQube analysis
-                                dotnet sonarscanner begin /k:"${SONAR_PROJECT_KEY}" /d:sonar.host.url="http://sonarqube:9000/" /d:sonar.login="${SONAR_TOKEN}"
-                                dotnet build ctesp2425-final-gAf/ctesp2425-final-gAf.csproj --no-restore
-                                dotnet sonarscanner end /d:sonar.login="${SONAR_TOKEN}"
-                            '''
-                        } else {
-                            bat '''
-                                dotnet tool install --global dotnet-sonarscanner || true
-                                dotnet sonarscanner begin /k:"${SONAR_PROJECT_KEY}" /d:sonar.host.url="http://sonarqube:9000/" /d:sonar.login="${SONAR_TOKEN}"
+                        
+                                # Begin SonarQube analysis with explicit server URL and authentication
+                                dotnet sonarscanner begin \
+                                    /k:"${SONAR_PROJECT_KEY}" \
+                                    /d:sonar.host.url="http://sonarqube:9000" \
+                                    /d:sonar.login="${SONAR_TOKEN}" \
+                                    /d:sonar.qualitygate.wait=true
+                            
                                 dotnet build ctesp2425-final-gAf/ctesp2425-final-gAf.csproj --no-restore
                                 dotnet sonarscanner end /d:sonar.login="${SONAR_TOKEN}"
                             '''
                         }
+                    } else {
+                        bat '''
+                            dotnet tool install --global dotnet-sonarscanner || true
+                            dotnet sonarscanner begin /k:"${SONAR_PROJECT_KEY}" /d:sonar.host.url="http://sonarqube:9000/" /d:sonar.login="${SONAR_TOKEN}"
+                            dotnet build ctesp2425-final-gAf/ctesp2425-final-gAf.csproj --no-restore
+                            dotnet sonarscanner end /d:sonar.login="${SONAR_TOKEN}"
+                        '''
                     }
                 }
             }
