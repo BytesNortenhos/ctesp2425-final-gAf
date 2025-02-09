@@ -3,10 +3,10 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'ctesp2425-final-gaf'
-        DOCKER_HUB_REPO = 'robertovalentee/ctesp2425-final-gaf' // Replace with your Docker Hub repository
+        DOCKER_HUB_REPO = 'robertovalentee/ctesp2425-final-gaf' // Substituir pelo repositório Docker Hub
         SONAR_PROJECT_KEY = 'reservation-api'
         DOTNET_SYSTEM_GLOBALIZATION_INVARIANT = 'true'
-        SONAR_TOKEN = 'sqp_a7139bcfa4e76adb751c6990dd55bfcad26033d4' // Hardcoded SonarQube token
+        SONAR_TOKEN = 'squ_541cd9e6b0a47ed44eec21c53da6831fde587044' // Hardcoded SonarQube
     }
 
     tools {
@@ -14,13 +14,14 @@ pipeline {
     }
 
     stages {
+        // Estágio 1: Instalação do libicu (apenas para Unix)
         stage('Install libicu (Unix Only)') {
             when {
-                expression { isUnix() } // Only run this stage on Unix-like systems
+                expression { isUnix() } // Executa apenas em sistemas Unix-like
             }
             steps {
                 sh '''
-                    # Install libicu based on the Linux distribution
+                    # Instala o libicu consoante a distribuição Linux
                     if command -v apt-get &> /dev/null; then
                         apt-get update || true
                         apt-get install -y libicu-dev || true
@@ -31,19 +32,21 @@ pipeline {
                     elif command -v dnf &> /dev/null; then
                         dnf install -y libicu || true
                     else
-                        echo "Unsupported package manager. Please install libicu manually."
+                        echo "Gestor de pacotes não suportado. Por favor, instale o libicu manualmente."
                         exit 1
                     fi
                 '''
             }
         }
 
+        // Estágio 2: Checkout do código fonte
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
 
+        // Estágio 3: Restauro das dependências do projeto principal
         stage('Restore') {
             steps {
                 script {
@@ -56,6 +59,7 @@ pipeline {
             }
         }
 
+        // Estágio 4: Compilação do projeto principal
         stage('Build') {
             steps {
                 script {
@@ -68,6 +72,7 @@ pipeline {
             }
         }
 
+        // Estágio 5: Restauro das dependências do projeto de testes XUnit
         stage('Restore XUnit Test') {
             steps {
                 script {
@@ -80,6 +85,7 @@ pipeline {
             }
         }
 
+        // Estágio 6: Execução dos testes XUnit
         stage('Test') {
             steps {
                 script {
@@ -92,22 +98,23 @@ pipeline {
             }
         }
 
+        // Estágio 7: Análise do código com SonarQube
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     script {
                         if (isUnix()) {
                             sh '''
-                                # Install dotnet-sonarscanner
+                                # Instala o dotnet-sonarscanner
                                 dotnet tool install --global dotnet-sonarscanner || true
 
-                                # Add .NET tools directory to PATH
+                                # Adiciona o diretório de ferramentas .NET ao PATH
                                 export PATH="$PATH:/var/jenkins_home/.dotnet/tools"
 
-                                # Verify dotnet-sonarscanner is available
+                                # Verifica se o dotnet-sonarscanner está disponível
                                 which dotnet-sonarscanner || echo "dotnet-sonarscanner not found"
                         
-                                # Begin SonarQube analysis with explicit server URL and authentication
+                                # Inicia a análise SonarQube com URL e autenticação explícitas
                                 dotnet sonarscanner begin \
                                     /k:"${SONAR_PROJECT_KEY}" \
                                     /d:sonar.host.url="http://sonarqube:9000" \
@@ -130,6 +137,7 @@ pipeline {
             }
         }
 
+        // Estágio 8: Construção da imagem Docker
         stage('Docker Build') {
             steps {
                 script {
@@ -144,11 +152,12 @@ pipeline {
             }
         }
 
+        // Estágio 9: Push da imagem Docker para o Docker Hub
         stage('Push Docker Image to Docker Hub') {
             steps {
                 script {
                     docker.withServer('unix:///var/run/docker.sock') {
-                        // Use Jenkins Docker settings for registry URL and credentials
+                        // Usa as configurações do Jenkins para o URL do registo e credenciais
                         docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
                             if (isUnix()) {
                                 sh "docker tag ${DOCKER_IMAGE} ${DOCKER_HUB_REPO}:latest"
@@ -163,20 +172,21 @@ pipeline {
             }
         }
 
+        // Estágio 10: Implementação da imagem Docker a partir do Docker Hub
         stage('Deploy from Docker Hub') {
             steps {
                 script {
                     docker.withServer('unix:///var/run/docker.sock') {
                         if (isUnix()) {
                             sh """
-                                # Stop and remove the existing container
+                                # Para e remove o contentor existente
                                 docker stop ${DOCKER_IMAGE} || true
                                 docker rm ${DOCKER_IMAGE} || true
 
-                                # Pull the latest image from Docker Hub
+                                # Faz pull da imagem mais recente do Docker Hub
                                 docker pull ${DOCKER_HUB_REPO}:latest
 
-                                # Run the new container
+                                # Executa o novo contentor
                                 docker run -d --name ${DOCKER_IMAGE} -p 8050:8080 ${DOCKER_HUB_REPO}:latest
                             """
                         } else {
@@ -193,6 +203,7 @@ pipeline {
         }
     }
 
+    // Pós-construção: Limpeza do espaço de trabalho
     post {
         always {
             cleanWs() 
