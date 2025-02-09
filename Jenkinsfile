@@ -99,6 +99,12 @@ pipeline {
                             sh '''
                                 # Install dotnet-sonarscanner
                                 dotnet tool install --global dotnet-sonarscanner || true
+
+                                # Add .NET tools directory to PATH
+                                export PATH="$PATH:/var/jenkins_home/.dotnet/tools"
+
+                                # Verify dotnet-sonarscanner is available
+                                which dotnet-sonarscanner || echo "dotnet-sonarscanner not found"
                         
                                 # Begin SonarQube analysis with explicit server URL and authentication
                                 dotnet sonarscanner begin \
