@@ -132,10 +132,12 @@ pipeline {
         stage('Docker Build') {
             steps {
                 script {
-                    if (isUnix()) {
-                        sh "docker build -t ${DOCKER_IMAGE} -f ctesp2425-final-gAf/Dockerfile ctesp2425-final-gAf"
-                    } else {
-                        bat "docker build -t ${DOCKER_IMAGE} -f ctesp2425-final-gAf/Dockerfile ctesp2425-final-gAf"
+                    docker.withServer('unix:///var/run/docker.sock') {
+                        if (isUnix()) {
+                            sh "docker build -t ${DOCKER_IMAGE} -f ctesp2425-final-gAf/Dockerfile ctesp2425-final-gAf"
+                        } else {
+                            bat "docker build -t ${DOCKER_IMAGE} -f ctesp2425-final-gAf/Dockerfile ctesp2425-final-gAf"
+                        }
                     }
                 }
             }
@@ -144,23 +146,24 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    if (isUnix()) {
-                        sh """
-                            docker stop ${DOCKER_IMAGE} || true
-                            docker rm ${DOCKER_IMAGE} || true
-                            docker run -d --name ${DOCKER_IMAGE} -p 8050:8080 ${DOCKER_IMAGE}
-                        """
-                    } else {
-                        bat """
-                            docker stop ${DOCKER_IMAGE} || true
-                            docker rm ${DOCKER_IMAGE} || true
-                            docker run -d --name ${DOCKER_IMAGE} -p 8050:8080 ${DOCKER_IMAGE}
-                        """
+                    docker.withServer('unix:///var/run/docker.sock') {
+                        if (isUnix()) {
+                            sh """
+                                docker stop ${DOCKER_IMAGE} || true
+                                docker rm ${DOCKER_IMAGE} || true
+                                docker run -d --name ${DOCKER_IMAGE} -p 8050:8080 ${DOCKER_IMAGE}
+                            """
+                        } else {
+                            bat """
+                                docker stop ${DOCKER_IMAGE} || true
+                                docker rm ${DOCKER_IMAGE} || true
+                                docker run -d --name ${DOCKER_IMAGE} -p 8050:8080 ${DOCKER_IMAGE}
+                            """
+                        }
                     }
                 }
             }
         }
-    }
 
     post {
         always {
