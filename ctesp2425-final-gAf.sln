@@ -3,7 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ctesp2425-final-gAf", "ctesp2425-final-gAf\ctesp2425-final-gAf.csproj", "{3BD1B9D6-B604-4AF1-8C2F-726C3D041FB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ctesp2425-final-gAf", "ctesp2425-final-gAf\ctesp2425-final-gAf.csproj", "{3BD1B9D6-B604-4AF1-8C2F-726C3D041FB9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XUnit_Test", "XUnit_Test\XUnit_Test.csproj", "{D8EFFCC4-8DD6-4B96-B518-3E899E8B7A09}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3BD1B9D6-B604-4AF1-8C2F-726C3D041FB9} = {3BD1B9D6-B604-4AF1-8C2F-726C3D041FB9}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Itens de Solução", "Itens de Solução", "{E30F3A09-978E-437A-B8EB-13A25910E70A}"
+	ProjectSection(SolutionItems) = preProject
+		Jenkinsfile = Jenkinsfile
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +25,10 @@ Global
 		{3BD1B9D6-B604-4AF1-8C2F-726C3D041FB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3BD1B9D6-B604-4AF1-8C2F-726C3D041FB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3BD1B9D6-B604-4AF1-8C2F-726C3D041FB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8EFFCC4-8DD6-4B96-B518-3E899E8B7A09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8EFFCC4-8DD6-4B96-B518-3E899E8B7A09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8EFFCC4-8DD6-4B96-B518-3E899E8B7A09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8EFFCC4-8DD6-4B96-B518-3E899E8B7A09}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

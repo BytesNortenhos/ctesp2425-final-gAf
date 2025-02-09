@@ -1,0 +1,11 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "gusztavvargadr/sql-server"
+  config.vm.box_version = "2019.2102.2409"
+
+  config.vm.network "forwarded_port", guest: 1433, host: 1433
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "2048"
+    vb.cpus = 2
+  end
+end
