@@ -110,15 +110,15 @@ pipeline {
                                 dotnet build ctesp2425-final-gAf/ctesp2425-final-gAf.csproj --no-restore
                                 dotnet sonarscanner end /d:sonar.login="${SONAR_TOKEN}"
                             '''
+                        } else {
+                            bat '''
+                                dotnet tool install --global dotnet-sonarscanner || true
+                                dotnet sonarscanner begin /k:"${SONAR_PROJECT_KEY}" /d:sonar.host.url="http://sonarqube:9000/" /d:sonar.login="${SONAR_TOKEN}"
+                                dotnet build ctesp2425-final-gAf/ctesp2425-final-gAf.csproj --no-restore
+                                dotnet sonarscanner end /d:sonar.login="${SONAR_TOKEN}"
+                            '''
                         }
-                    } else {
-                        bat '''
-                            dotnet tool install --global dotnet-sonarscanner || true
-                            dotnet sonarscanner begin /k:"${SONAR_PROJECT_KEY}" /d:sonar.host.url="http://sonarqube:9000/" /d:sonar.login="${SONAR_TOKEN}"
-                            dotnet build ctesp2425-final-gAf/ctesp2425-final-gAf.csproj --no-restore
-                            dotnet sonarscanner end /d:sonar.login="${SONAR_TOKEN}"
-                        '''
-                    }
+                    } 
                 }
             }
         }
