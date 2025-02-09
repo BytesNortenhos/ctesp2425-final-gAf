@@ -6,7 +6,7 @@ pipeline {
         DOCKER_HUB_REPO = 'robertovalentee/ctesp2425-final-gaf' // Replace with your Docker Hub repository
         SONAR_PROJECT_KEY = 'reservation-api'
         DOTNET_SYSTEM_GLOBALIZATION_INVARIANT = 'true'
-        SONAR_TOKEN = 'squ_541cd9e6b0a47ed44eec21c53da6831fde587044' // Hardcoded SonarQube token
+        SONAR_TOKEN = 'sqp_a7139bcfa4e76adb751c6990dd55bfcad26033d4' // Hardcoded SonarQube token
     }
 
     tools {
