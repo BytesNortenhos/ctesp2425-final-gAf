@@ -3,10 +3,10 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'ctesp2425-final-gaf'
-        DOCKER_HUB_REPO = 'robertovalentee/ctesp2425-final-gaf' // Substituir pelo repositÛrio Docker Hub
+        DOCKER_HUB_REPO = 'robertovalentee/ctesp2425-final-gaf' // Substituir pelo reposit√≥rio Docker Hub
         SONAR_PROJECT_KEY = 'reservation-api'
         DOTNET_SYSTEM_GLOBALIZATION_INVARIANT = 'true'
-        SONAR_TOKEN = 'squ_541cd9e6b0a47ed44eec21c53da6831fde587044' // Hardcoded SonarQube
+        SONAR_TOKEN = 'squ_5f308a4f8829eb4c8295c6dafb81e164f5956f12' // Hardcoded SonarQube
     }
 
     tools {
@@ -14,14 +14,14 @@ pipeline {
     }
 
     stages {
-        // Est·gio 1: InstalaÁ„o do libicu (apenas para Unix)
+        // Est√°gio 1: Instala√ß√£o do libicu (apenas para Unix)
         stage('Install libicu (Unix Only)') {
             when {
                 expression { isUnix() } // Executa apenas em sistemas Unix-like
             }
             steps {
                 sh '''
-                    # Instala o libicu consoante a distribuiÁ„o Linux
+                    # Instala o libicu consoante a distribui√ß√£o Linux
                     if command -v apt-get &> /dev/null; then
                         apt-get update || true
                         apt-get install -y libicu-dev || true
@@ -32,21 +32,21 @@ pipeline {
                     elif command -v dnf &> /dev/null; then
                         dnf install -y libicu || true
                     else
-                        echo "Gestor de pacotes n„o suportado. Por favor, instale o libicu manualmente."
+                        echo "Gestor de pacotes n√£o suportado. Por favor, instale o libicu manualmente."
                         exit 1
                     fi
                 '''
             }
         }
 
-        // Est·gio 2: Checkout do cÛdigo fonte
+        // Est√°gio 2: Checkout do c√≥digo fonte
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
 
-        // Est·gio 3: Restauro das dependÍncias do projeto principal
+        // Est√°gio 3: Restauro das depend√™ncias do projeto principal
         stage('Restore') {
             steps {
                 script {
@@ -59,7 +59,7 @@ pipeline {
             }
         }
 
-        // Est·gio 4: CompilaÁ„o do projeto principal
+        // Est√°gio 4: Compila√ß√£o do projeto principal
         stage('Build') {
             steps {
                 script {
@@ -72,7 +72,7 @@ pipeline {
             }
         }
 
-        // Est·gio 5: Restauro das dependÍncias do projeto de testes XUnit
+        // Est√°gio 5: Restauro das depend√™ncias do projeto de testes XUnit
         stage('Restore XUnit Test') {
             steps {
                 script {
@@ -85,7 +85,7 @@ pipeline {
             }
         }
 
-        // Est·gio 6: ExecuÁ„o dos testes XUnit
+        // Est√°gio 6: Execu√ß√£o dos testes XUnit
         stage('Test') {
             steps {
                 script {
@@ -98,7 +98,7 @@ pipeline {
             }
         }
 
-        // Est·gio 7: An·lise do cÛdigo com SonarQube
+        // Est√°gio 7: An√°lise do c√≥digo com SonarQube
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
@@ -108,13 +108,13 @@ pipeline {
                                 # Instala o dotnet-sonarscanner
                                 dotnet tool install --global dotnet-sonarscanner || true
 
-                                # Adiciona o diretÛrio de ferramentas .NET ao PATH
+                                # Adiciona o diret√≥rio de ferramentas .NET ao PATH
                                 export PATH="$PATH:/var/jenkins_home/.dotnet/tools"
 
-                                # Verifica se o dotnet-sonarscanner est· disponÌvel
+                                # Verifica se o dotnet-sonarscanner est√° dispon√≠vel
                                 which dotnet-sonarscanner || echo "dotnet-sonarscanner not found"
                         
-                                # Inicia a an·lise SonarQube com URL e autenticaÁ„o explÌcitas
+                                # Inicia a an√°lise SonarQube com URL e autentica√ß√£o expl√≠citas
                                 dotnet sonarscanner begin \
                                     /k:"${SONAR_PROJECT_KEY}" \
                                     /d:sonar.host.url="http://sonarqube:9000" \
@@ -137,7 +137,7 @@ pipeline {
             }
         }
 
-        // Est·gio 8: ConstruÁ„o da imagem Docker
+        // Est√°gio 8: Constru√ß√£o da imagem Docker
         stage('Docker Build') {
             steps {
                 script {
@@ -152,12 +152,12 @@ pipeline {
             }
         }
 
-        // Est·gio 9: Push da imagem Docker para o Docker Hub
+        // Est√°gio 9: Push da imagem Docker para o Docker Hub
         stage('Push Docker Image to Docker Hub') {
             steps {
                 script {
                     docker.withServer('unix:///var/run/docker.sock') {
-                        // Usa as configuraÁıes do Jenkins para o URL do registo e credenciais
+                        // Usa as configura√ß√µes do Jenkins para o URL do registo e credenciais
                         docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
                             if (isUnix()) {
                                 sh "docker tag ${DOCKER_IMAGE} ${DOCKER_HUB_REPO}:latest"
@@ -172,7 +172,7 @@ pipeline {
             }
         }
 
-        // Est·gio 10: ImplementaÁ„o da imagem Docker a partir do Docker Hub
+        // Est√°gio 10: Implementa√ß√£o da imagem Docker a partir do Docker Hub
         stage('Deploy from Docker Hub') {
             steps {
                 script {
@@ -203,7 +203,7 @@ pipeline {
         }
     }
 
-    // PÛs-construÁ„o: Limpeza do espaÁo de trabalho
+    // P√≥s-constru√ß√£o: Limpeza do espa√ßo de trabalho
     post {
         always {
             cleanWs() 
